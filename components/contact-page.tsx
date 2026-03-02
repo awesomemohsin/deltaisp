@@ -8,7 +8,6 @@ import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { DESIGN_VERSION } from '@/lib/site-config'
-import { sendContactEmail } from '@/app/actions/contact'
 import { contactInfo as centralizedContactInfo } from '@/lib/homepage-data'
 import {
   Form,
@@ -96,7 +95,13 @@ export function ContactPageContent() {
 
   const onSubmit = async (data: ContactFormData) => {
     try {
-      const result = await sendContactEmail(data)
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      })
+
+      const result = await response.json()
 
       if (result.success) {
         setIsSubmitted(true)
